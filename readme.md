@@ -33,9 +33,9 @@ In `tmv7/tmv7.ino`, edit:
 Host a plain-text file at `UPDATE_MANIFEST_URL`:
 
 ```text
-version_code=2026022102
-version_name=7.1.1
-firmware_url=https://raw.githubusercontent.com/gavc/tmv71/main/ota/tmv7-2026022102.bin
+version_code=2026022202
+version_name=7.1.2
+firmware_url=https://raw.githubusercontent.com/gavc/tmv71/main/ota/tmv7-2026022202.bin
 ```
 
 Rules:

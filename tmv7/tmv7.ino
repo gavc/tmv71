@@ -22,9 +22,9 @@ constexpr unsigned long WIFI_BLINK_MS = 250UL;
 constexpr char AP_NAME[] = "TankMonitorAP";
 
 // Update manifest format:
-// version_code=2026022201
+// version_code=2026022202
 // version_name=7.1.2
-// firmware_url=https://raw.githubusercontent.com/gavc/tmv71/main/ota/tmv7-2026022201.bin
+// firmware_url=https://raw.githubusercontent.com/gavc/tmv71/main/ota/tmv7-2026022202.bin
 constexpr long FW_VERSION_CODE = 2026022202;
 constexpr char FW_VERSION_NAME[] = "7.1.2";
 constexpr char UPDATE_MANIFEST_URL[] = "https://raw.githubusercontent.com/gavc/tmv71/main/ota/manifest.txt";
