@@ -1,0 +1,10 @@
+# TMV7 OTA manifest
+# Keep keys exactly as shown. Lines starting with # are ignored.
+# For each new release:
+# 1) Increase version_code (must be > FW_VERSION_CODE in firmware)
+# 2) Update version_name
+# 3) Point firmware_url to the new .bin file
+
+version_code=2026022102
+version_name=7.1.1
+firmware_url=https://raw.githubusercontent.com/gavc/tmv71/main/ota/tmv7-2026022102.bin
