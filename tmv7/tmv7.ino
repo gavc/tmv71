@@ -84,6 +84,25 @@ void syncClock() {
   lastClockSyncMs = millis();
 }
 
+void backfillSensorEpochTimes() {
+  if (!isTimeSynced()) {
+    return;
+  }
+
+  const time_t nowEpoch = time(nullptr);
+  const unsigned long nowMs = millis();
+
+  for (uint8_t i = 0; i < 4; i++) {
+    if (!sensorInitialized[i] || sensorChangedAtMs[i] == 0 || sensorChangedAtEpoch[i] >= MIN_VALID_EPOCH) {
+      continue;
+    }
+
+    const unsigned long ageMs = (unsigned long)(nowMs - sensorChangedAtMs[i]);
+    const time_t ageSec = (time_t)(ageMs / 1000UL);
+    sensorChangedAtEpoch[i] = nowEpoch > ageSec ? (nowEpoch - ageSec) : nowEpoch;
+  }
+}
+
 String formatEpoch(time_t t) {
   if (t <= 0) {
     return "-";
@@ -515,6 +534,7 @@ void loop() {
     if (intervalElapsed(lastClockSyncMs, syncInterval)) {
       syncClock();
     }
+    backfillSensorEpochTimes();
   }
 
   if (intervalElapsed(lastSensorPollMs, SENSOR_POLL_MS)) {
