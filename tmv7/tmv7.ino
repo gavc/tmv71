@@ -25,8 +25,8 @@ constexpr char AP_NAME[] = "TankMonitorAP";
 // version_code=2026022202
 // version_name=7.1.2
 // firmware_url=https://raw.githubusercontent.com/gavc/tmv71/main/ota/tmv7-2026022202.bin
-constexpr long FW_VERSION_CODE = 2026022202;
-constexpr char FW_VERSION_NAME[] = "7.1.2";
+constexpr long FW_VERSION_CODE = 2026022301;
+constexpr char FW_VERSION_NAME[] = "7.1.3";
 constexpr char UPDATE_MANIFEST_URL[] = "https://raw.githubusercontent.com/gavc/tmv71/main/ota/manifest.txt";
 
 constexpr char NTP_SERVER[] = "pool.ntp.org";
@@ -300,34 +300,41 @@ void handleRoot() {
   const bool wifiOk = (WiFi.status() == WL_CONNECTED);
   const int rssi = wifiOk ? WiFi.RSSI() : -100;
   const uint8_t signalBars = wifiOk ? rssiToBars(rssi) : 0;
+  const String signalTooltip = wifiOk ? (String(rssi) + " dBm") : "offline";
 
   String html;
-  html.reserve(6200);
+  html.reserve(7000);
   html += "<!doctype html><html><head><meta charset='utf-8'>";
   html += "<meta name='viewport' content='width=device-width,initial-scale=1'>";
   html += "<title>Tank Monitor</title>";
   html += "<style>";
-  html += "body{font-family:Arial,sans-serif;background:#f4f6f8;color:#1f2937;margin:0;padding:14px;}";
-  html += ".card{max-width:720px;margin:0 auto;background:#fff;border-radius:10px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.08);}";
-  html += "h1{font-size:1.3rem;margin:0 0 12px 0;}";
-  html += "p{margin:.4rem 0;}";
-  html += "table{border-collapse:collapse;width:100%;margin-top:10px;}";
-  html += "th,td{border:1px solid #e5e7eb;padding:8px;text-align:left;font-size:.95rem;}";
-  html += "th{background:#eef2f7;}";
+  html += "body{font-family:Arial,sans-serif;background:#f4f6f8;color:#1f2937;margin:0;padding:12px;}";
+  html += ".card{max-width:720px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px;}";
+  html += "h1{font-size:1.2rem;margin:0;}";
+  html += "p{margin:.35rem 0;}";
+  html += ".topline{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px;}";
   html += ".wet{color:#0f766e;font-weight:700;}.dry{color:#b91c1c;font-weight:700;}";
-  html += ".actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}";
-  html += "button{padding:10px 14px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;}";
+  html += ".tank-wrap{margin:10px auto 6px auto;max-width:300px;}";
+  html += ".tank{border:2px solid #334155;border-radius:12px 12px 6px 6px;overflow:hidden;}";
+  html += ".tank-band{min-height:64px;padding:8px;border-top:1px solid #cbd5e1;display:flex;flex-direction:column;justify-content:center;}";
+  html += ".tank-band:first-child{border-top:0;}";
+  html += ".tank-band.wet{background:#dbeafe;}";
+  html += ".tank-band.dry{background:#f8fafc;}";
+  html += ".band-title{font-weight:700;font-size:.92rem;}";
+  html += ".band-time{font-size:.8rem;color:#334155;margin-top:3px;word-break:break-word;}";
+  html += ".actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}";
+  html += "button{padding:10px 12px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;}";
   html += "button.alt{background:#0f766e;}";
-  html += ".note{margin-top:12px;padding:10px;border-radius:8px;background:#f8fafc;border:1px solid #e5e7eb;font-size:.92rem;}";
-  html += ".signal-wrap{display:inline-flex;align-items:flex-end;gap:8px;}";
+  html += ".note{margin-top:10px;padding:9px;border-radius:8px;background:#f8fafc;border:1px solid #e5e7eb;font-size:.9rem;word-break:break-word;}";
+  html += ".signal-wrap{display:inline-flex;align-items:flex-end;}";
   html += ".signal-bars{display:inline-flex;align-items:flex-end;gap:2px;height:14px;}";
   html += ".bar{display:inline-block;width:4px;background:#cbd5e1;border-radius:2px;}";
   html += ".bar.b1{height:4px;}.bar.b2{height:7px;}.bar.b3{height:10px;}.bar.b4{height:13px;}";
   html += ".bar.on{background:#16a34a;}";
+  html += "@media(max-width:520px){body{padding:8px;}.card{padding:10px;}.tank-band{min-height:58px;}.actions button{width:100%;}}";
   html += "</style></head><body><div class='card'>";
 
-  html += "<h1>Tank Monitor</h1>";
-  html += "<p><strong>Signal:</strong> <span class='signal-wrap'><span class='signal-bars'>";
+  html += "<div class='topline'><h1>Tank Monitor</h1><span class='signal-wrap' aria-label='Signal strength' title='" + htmlEscape(signalTooltip) + "'><span class='signal-bars'>";
   for (uint8_t i = 0; i < 4; i++) {
     html += "<span class='bar b" + String(i + 1);
     if (wifiOk && i < signalBars) {
@@ -335,28 +342,21 @@ void handleRoot() {
     }
     html += "'></span>";
   }
-  html += "</span><span>";
-  html += wifiOk ? (String(rssi) + " dBm") : "offline";
-  html += "</span></span></p>";
-  if (wifiOk) {
-    html += "<p><strong>IP:</strong> " + WiFi.localIP().toString() + "</p>";
-  }
-  html += "<p><strong>Tank Level:</strong> " + String(snapshot.tankPercent) + "%</p>";
-  html += "<p><strong>Wet Sensors:</strong> " + String(snapshot.wetCount) + "/4</p>";
+  html += "</span></span></div>";
 
-  html += "<table><tr><th>Sensor</th><th>Status</th><th>Last Change</th></tr>";
+  html += "<div class='tank-wrap'><div class='tank'>";
   for (uint8_t i = 0; i < 4; i++) {
-    html += "<tr><td>" + sensorLabel(i) + "</td><td>";
-    if (snapshot.wet[i]) {
-      html += "<span class='wet'>WET</span>";
-    } else {
-      html += "<span class='dry'>DRY</span>";
-    }
-    html += "</td><td>" + sensorChangeTimeToStr(i) + "</td></tr>";
+    const bool wet = snapshot.wet[i];
+    const String statusClass = wet ? "wet" : "dry";
+    const String statusText = wet ? "WET" : "DRY";
+    html += "<div class='tank-band " + statusClass + "'>";
+    html += "<div class='band-title'>" + sensorLabel(i) + " - <span class='" + statusClass + "'>" + statusText + "</span></div>";
+    html += "<div class='band-time'>Triggered: " + htmlEscape(sensorChangeTimeToStr(i)) + "</div>";
+    html += "</div>";
   }
-  html += "</table>";
+  html += "</div></div>";
 
-  html += "<p style='margin-top:12px'><strong>Firmware:</strong> ";
+  html += "<p style='margin-top:10px'><strong>Firmware:</strong> ";
   html += String(FW_VERSION_NAME) + " (" + String(FW_VERSION_CODE) + ")</p>";
 
   html += "<div class='actions'>";

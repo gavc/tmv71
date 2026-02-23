@@ -5,152 +5,54 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Tank Monitor Mock UI</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      color: #1f2937;
-      margin: 0;
-      padding: 14px;
-    }
-    .card {
-      max-width: 720px;
-      margin: 0 auto;
-      background: #fff;
-      border-radius: 10px;
-      padding: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-    h1 {
-      font-size: 1.3rem;
-      margin: 0 0 12px 0;
-    }
-    p {
-      margin: 0.4rem 0;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-top: 10px;
-    }
-    th, td {
-      border: 1px solid #e5e7eb;
-      padding: 8px;
-      text-align: left;
-      font-size: 0.95rem;
-    }
-    th {
-      background: #eef2f7;
-    }
-    .wet {
-      color: #0f766e;
-      font-weight: 700;
-    }
-    .dry {
-      color: #b91c1c;
-      font-weight: 700;
-    }
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-    button {
-      padding: 10px 14px;
-      border: none;
-      border-radius: 8px;
-      background: #2563eb;
-      color: #fff;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    button.alt {
-      background: #0f766e;
-    }
-    .note {
-      margin-top: 12px;
-      padding: 10px;
-      border-radius: 8px;
-      background: #f8fafc;
-      border: 1px solid #e5e7eb;
-      font-size: 0.92rem;
-      word-break: break-word;
-    }
-    .signal-wrap {
-      display: inline-flex;
-      align-items: flex-end;
-      gap: 8px;
-    }
-    .signal-bars {
-      display: inline-flex;
-      align-items: flex-end;
-      gap: 2px;
-      height: 14px;
-    }
-    .bar {
-      display: inline-block;
-      width: 4px;
-      background: #cbd5e1;
-      border-radius: 2px;
-    }
-    .bar.b1 { height: 4px; }
-    .bar.b2 { height: 7px; }
-    .bar.b3 { height: 10px; }
-    .bar.b4 { height: 13px; }
-    .bar.on {
-      background: #16a34a;
-    }
-    .mock-controls {
-      margin: 0 auto 12px auto;
-      max-width: 720px;
-      background: #fff;
-      border-radius: 10px;
-      padding: 12px 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-    .mock-controls h2 {
-      margin: 0 0 10px 0;
-      font-size: 1rem;
-    }
-    .row {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-    label {
-      font-size: 0.9rem;
-    }
-    input[type="text"] {
-      padding: 6px 8px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      min-width: 120px;
-    }
-    .sensor-grid {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .footer {
-      margin-top: 8px;
-      color: #6b7280;
-      font-size: 0.85rem;
+    body { font-family: Arial, sans-serif; background: #f4f6f8; color: #1f2937; margin: 0; padding: 12px; }
+    .panel, .card { max-width: 720px; margin: 0 auto 10px auto; background: #fff; border-radius: 10px; padding: 12px; border: 1px solid #e5e7eb; }
+    .card { margin-bottom: 0; }
+    h1 { font-size: 1.2rem; margin: 0; }
+    h2 { font-size: 1rem; margin: 0 0 8px 0; }
+    p { margin: 0.35rem 0; }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+    label { font-size: 0.92rem; }
+    input[type="text"] { padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 6px; min-width: 110px; }
+    .tank-wrap { margin: 10px auto 6px auto; max-width: 300px; }
+    .tank { border: 2px solid #334155; border-radius: 12px 12px 6px 6px; overflow: hidden; }
+    .tank-band { min-height: 64px; padding: 8px; border-top: 1px solid #cbd5e1; display: flex; flex-direction: column; justify-content: center; }
+    .tank-band:first-child { border-top: 0; }
+    .tank-band.wet { background: #dbeafe; }
+    .tank-band.dry { background: #f8fafc; }
+    .band-title { font-weight: 700; font-size: 0.92rem; }
+    .band-time { font-size: 0.8rem; color: #334155; margin-top: 3px; word-break: break-word; }
+    .wet { color: #0f766e; font-weight: 700; }
+    .dry { color: #b91c1c; font-weight: 700; }
+    .topline { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .signal-wrap { display: inline-flex; align-items: flex-end; }
+    .signal-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+    .bar { display: inline-block; width: 4px; background: #cbd5e1; border-radius: 2px; }
+    .bar.b1 { height: 4px; } .bar.b2 { height: 7px; } .bar.b3 { height: 10px; } .bar.b4 { height: 13px; }
+    .bar.on { background: #16a34a; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    button { padding: 10px 12px; border: 0; border-radius: 8px; background: #2563eb; color: #fff; font-weight: 700; }
+    button.alt { background: #0f766e; }
+    .note { margin-top: 10px; padding: 9px; border-radius: 8px; background: #f8fafc; border: 1px solid #e5e7eb; font-size: 0.9rem; word-break: break-word; }
+    .footer { margin-top: 6px; color: #6b7280; font-size: 0.82rem; }
+    @media (max-width: 520px) {
+      body { padding: 8px; }
+      .panel, .card { padding: 10px; }
+      .tank-band { min-height: 58px; }
+      .actions button { width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="mock-controls">
+  <div class="panel">
     <h2>Mock Controls</h2>
     <div class="row">
       <label><input id="wifiConnected" type="checkbox" checked> Online</label>
       <label>RSSI: <input id="rssiInput" type="text" value="-61"></label>
-      <label>IP: <input id="ipInput" type="text" value="192.168.1.77"></label>
       <label><input id="clockSynced" type="checkbox" checked> Clock synced</label>
       <label><input id="updateAvailable" type="checkbox"> Update available</label>
     </div>
-    <div class="row sensor-grid">
+    <div class="row">
       <label><input id="sTop" type="checkbox"> Top wet</label>
       <label><input id="sUpperMid" type="checkbox"> Upper-mid wet</label>
       <label><input id="sLowerMid" type="checkbox" checked> Lower-mid wet</label>
@@ -160,22 +62,21 @@
   </div>
 
   <div class="card">
-    <h1>Tank Monitor</h1>
-    <p><strong>Signal:</strong> <span class="signal-wrap"><span id="signalBars" class="signal-bars"></span><span id="signalText">-61 dBm</span></span></p>
-    <p id="ipLine"><strong>IP:</strong> <span id="ipText">192.168.1.77</span></p>
-    <p><strong>Tank Level:</strong> <span id="tankPercent">50</span>%</p>
-    <p><strong>Wet Sensors:</strong> <span id="wetCount">2</span>/4</p>
+    <div class="topline">
+      <h1>Tank Monitor</h1>
+      <span id="signalWrap" class="signal-wrap" aria-label="Signal strength" title="-61 dBm"><span id="signalBars" class="signal-bars"></span></span>
+    </div>
 
-    <table>
-      <tr><th>Sensor</th><th>Status</th><th>Last Change</th></tr>
-      <tr><td>Top</td><td id="st0"><span class="dry">DRY</span></td><td id="chg0">-</td></tr>
-      <tr><td>Upper-mid</td><td id="st1"><span class="dry">DRY</span></td><td id="chg1">-</td></tr>
-      <tr><td>Lower-mid</td><td id="st2"><span class="wet">WET</span></td><td id="chg2">-</td></tr>
-      <tr><td>Bottom</td><td id="st3"><span class="wet">WET</span></td><td id="chg3">-</td></tr>
-    </table>
+    <div class="tank-wrap">
+      <div class="tank" id="tankVisual">
+        <div class="tank-band dry" id="band0"><div class="band-title">Top - DRY</div><div class="band-time">-</div></div>
+        <div class="tank-band dry" id="band1"><div class="band-title">Upper-mid - DRY</div><div class="band-time">-</div></div>
+        <div class="tank-band wet" id="band2"><div class="band-title">Lower-mid - WET</div><div class="band-time">-</div></div>
+        <div class="tank-band wet" id="band3"><div class="band-title">Bottom - WET</div><div class="band-time">-</div></div>
+      </div>
+    </div>
 
-    <p style="margin-top:12px"><strong>Firmware:</strong> 7.1.0 (2026022101)</p>
-
+    <p style="margin-top:10px"><strong>Firmware:</strong> 7.1.0 (2026022101)</p>
     <div class="actions">
       <button type="button">Check for Update</button>
       <button id="installBtn" class="alt" type="button" style="display:none;">Install Update</button>
@@ -187,10 +88,10 @@
   </div>
 
   <script>
+    const sensorNames = ["Top", "Upper-mid", "Lower-mid", "Bottom"];
     const els = {
       wifiConnected: document.getElementById("wifiConnected"),
       rssiInput: document.getElementById("rssiInput"),
-      ipInput: document.getElementById("ipInput"),
       clockSynced: document.getElementById("clockSynced"),
       updateAvailable: document.getElementById("updateAvailable"),
       sensors: [
@@ -199,48 +100,21 @@
         document.getElementById("sLowerMid"),
         document.getElementById("sBottom")
       ],
+      bands: [
+        document.getElementById("band0"),
+        document.getElementById("band1"),
+        document.getElementById("band2"),
+        document.getElementById("band3")
+      ],
+      signalWrap: document.getElementById("signalWrap"),
       signalBars: document.getElementById("signalBars"),
-      signalText: document.getElementById("signalText"),
-      ipLine: document.getElementById("ipLine"),
-      ipText: document.getElementById("ipText"),
-      tankPercent: document.getElementById("tankPercent"),
-      wetCount: document.getElementById("wetCount"),
-      statuses: [
-        document.getElementById("st0"),
-        document.getElementById("st1"),
-        document.getElementById("st2"),
-        document.getElementById("st3")
-      ],
-      changedAt: [
-        document.getElementById("chg0"),
-        document.getElementById("chg1"),
-        document.getElementById("chg2"),
-        document.getElementById("chg3")
-      ],
       installBtn: document.getElementById("installBtn"),
       updateStatus: document.getElementById("updateStatus"),
       clockNote: document.getElementById("clockNote")
     };
 
     const bootMs = Date.now();
-    const lastChangeMs = [
-      bootMs - 120000,
-      bootMs - 360000,
-      bootMs - 15000,
-      bootMs - 20000
-    ];
-
-    function calcTankPercent(wet) {
-      let filledBands = 0;
-      for (let i = 3; i >= 0; i--) {
-        if (wet[i]) {
-          filledBands++;
-        } else {
-          break;
-        }
-      }
-      return filledBands * 25;
-    }
+    const lastChangeMs = [bootMs - 120000, bootMs - 360000, bootMs - 15000, bootMs - 20000];
 
     function barsFromRssi(rssi) {
       if (rssi >= -55) return 4;
@@ -253,14 +127,12 @@
     function formatDate(ts) {
       const d = new Date(ts);
       const pad = n => String(n).padStart(2, "0");
-      return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) +
-        " " + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+      return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + " " +
+        pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
     }
 
     function formatChange(ts) {
-      if (els.clockSynced.checked) {
-        return formatDate(ts);
-      }
+      if (els.clockSynced.checked) return formatDate(ts);
       return "t+" + Math.floor((ts - bootMs) / 1000) + "s";
     }
 
@@ -268,6 +140,7 @@
       const online = els.wifiConnected.checked;
       const rssi = Number.parseInt(els.rssiInput.value, 10);
       const bars = online && !Number.isNaN(rssi) ? barsFromRssi(rssi) : 0;
+      const tooltip = online ? ((Number.isNaN(rssi) ? "-" : String(rssi)) + " dBm") : "offline";
 
       els.signalBars.innerHTML = "";
       for (let i = 0; i < 4; i++) {
@@ -275,36 +148,28 @@
         span.className = "bar b" + (i + 1) + (online && i < bars ? " on" : "");
         els.signalBars.appendChild(span);
       }
+      els.signalWrap.setAttribute("title", tooltip);
+    }
 
-      els.signalText.textContent = online
-        ? ((Number.isNaN(rssi) ? "-" : String(rssi)) + " dBm")
-        : "offline";
+    function renderTankBands(wet) {
+      for (let i = 0; i < 4; i++) {
+        const band = els.bands[i];
+        const status = wet[i] ? "WET" : "DRY";
+        const klass = wet[i] ? "wet" : "dry";
+        band.className = "tank-band " + klass;
+        band.innerHTML = "<div class='band-title'>" + sensorNames[i] + " - <span class='" + klass + "'>" + status + "</span></div>" +
+          "<div class='band-time'>Triggered: " + formatChange(lastChangeMs[i]) + "</div>";
+      }
     }
 
     function render() {
       const wet = els.sensors.map(cb => cb.checked);
-      const wetCount = wet.filter(Boolean).length;
-      const percent = calcTankPercent(wet);
 
       renderSignal();
-      els.ipLine.style.display = els.wifiConnected.checked ? "" : "none";
-      els.ipText.textContent = els.ipInput.value || "-";
-
-      els.tankPercent.textContent = String(percent);
-      els.wetCount.textContent = String(wetCount);
-
-      for (let i = 0; i < wet.length; i++) {
-        els.statuses[i].innerHTML = wet[i]
-          ? "<span class='wet'>WET</span>"
-          : "<span class='dry'>DRY</span>";
-        els.changedAt[i].textContent = formatChange(lastChangeMs[i]);
-      }
+      renderTankBands(wet);
 
       els.installBtn.style.display = els.updateAvailable.checked ? "" : "none";
-      els.updateStatus.textContent = els.updateAvailable.checked
-        ? "Update found: 7.1.1 (2026022102)."
-        : "No update check yet.";
-
+      els.updateStatus.textContent = els.updateAvailable.checked ? "Update found: 7.1.1 (2026022102)." : "No update check yet.";
       els.clockNote.style.display = els.clockSynced.checked ? "none" : "";
     }
 
@@ -314,14 +179,7 @@
         render();
       });
     });
-
-    [
-      els.wifiConnected,
-      els.rssiInput,
-      els.ipInput,
-      els.clockSynced,
-      els.updateAvailable
-    ].forEach(el => el.addEventListener("input", render));
+    [els.wifiConnected, els.rssiInput, els.clockSynced, els.updateAvailable].forEach(el => el.addEventListener("input", render));
 
     render();
   </script>
