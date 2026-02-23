@@ -24,9 +24,9 @@ constexpr char AP_NAME[] = "TankMonitorAP";
 // Update manifest format:
 // version_code=2026022202
 // version_name=7.1.2
-// firmware_url=https://raw.githubusercontent.com/gavc/tmv71/main/ota/tmv7-2026022302.bin
-constexpr long FW_VERSION_CODE = 2026022302;
-constexpr char FW_VERSION_NAME[] = "7.1.4";
+// firmware_url=https://raw.githubusercontent.com/gavc/tmv71/main/ota/tmv7-2026022303.bin
+constexpr long FW_VERSION_CODE = 2026022303;
+constexpr char FW_VERSION_NAME[] = "7.1.5";
 constexpr char UPDATE_MANIFEST_URL[] = "https://raw.githubusercontent.com/gavc/tmv71/main/ota/manifest.txt";
 
 constexpr char NTP_SERVER[] = "pool.ntp.org";
@@ -437,7 +437,17 @@ void handleInstallUpdate() {
     return;
   }
 
-  server.send(200, "text/plain", "Starting OTA update. Device will reboot if successful.");
+  String otaHtml;
+  otaHtml.reserve(700);
+  otaHtml += "<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>";
+  otaHtml += "<title>OTA Update</title><style>body{font-family:Arial,sans-serif;margin:24px;color:#0f172a;}h1{font-size:1.2rem;margin:0 0 8px;}p{margin:8px 0;}";
+  otaHtml += "#count{font-weight:700;font-size:1.1rem;}</style></head><body>";
+  otaHtml += "<h1>Starting OTA update</h1>";
+  otaHtml += "<p>Device will reboot if successful.</p>";
+  otaHtml += "<p>Returning to main page in <span id='count'>30</span>s...</p>";
+  otaHtml += "<script>var s=30;var el=document.getElementById('count');setInterval(function(){s--;if(s>=0){el.textContent=s;}},1000);";
+  otaHtml += "setTimeout(function(){window.location.href='/'},30000);</script></body></html>";
+  server.send(200, "text/html", otaHtml);
   delay(200);
 
   t_httpUpdate_return result;
