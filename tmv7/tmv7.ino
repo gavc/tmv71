@@ -24,9 +24,9 @@ constexpr char AP_NAME[] = "TankMonitorAP";
 // Update manifest format:
 // version_code=2026022202
 // version_name=7.1.2
-// firmware_url=https://raw.githubusercontent.com/gavc/tmv71/main/ota/tmv7-2026022202.bin
-constexpr long FW_VERSION_CODE = 2026022301;
-constexpr char FW_VERSION_NAME[] = "7.1.3";
+// firmware_url=https://raw.githubusercontent.com/gavc/tmv71/main/ota/tmv7-2026022302.bin
+constexpr long FW_VERSION_CODE = 2026022302;
+constexpr char FW_VERSION_NAME[] = "7.1.4";
 constexpr char UPDATE_MANIFEST_URL[] = "https://raw.githubusercontent.com/gavc/tmv71/main/ota/manifest.txt";
 
 constexpr char NTP_SERVER[] = "pool.ntp.org";
